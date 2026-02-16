@@ -73,11 +73,10 @@ export default function BookmarksPage() {
         </main>
       </div>
       <EditModal
-        closeModal={() => setIsEdit(false)}
-        header="Edit Bookmark"
-        isOpen={isEdit}
-        bookmark={element}
-      />
+  isOpen={isEdit}
+  closeModal={() => setIsEdit(false)}
+  bookmark={element}
+/>
     </>
   );
 }

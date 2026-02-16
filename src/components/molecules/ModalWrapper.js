@@ -15,28 +15,24 @@ export default function Modal({
   isDisable = false,
   children,
 }) {
+  if (!isOpen) return null;
+
   return (
     <Dialog open={isOpen} onClose={closeModal} className="relative z-50">
-      {/* Backdrop */}
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
-      {/* Center */}
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-full max-w-lg rounded-lg bg-white shadow-xl">
 
-          {/* Header */}
           <div className="px-6 pt-6">
-            <DialogTitle className="text-lg font-semibold text-gray-900">
+            <DialogTitle className="text-lg font-semibold">
               {header}
             </DialogTitle>
           </div>
 
-          {/* Body */}
           <div className="px-6 py-4">{children}</div>
 
-          {/* Footer */}
           <div className="flex justify-end gap-3 bg-gray-50 px-6 py-4">
-
             <button
               disabled={isDisable}
               onClick={() => {
@@ -55,12 +51,12 @@ export default function Modal({
 
             <button
               onClick={closeModal}
-              className="px-4 py-2 rounded-md bg-white border hover:bg-gray-100"
+              className="px-4 py-2 rounded-md bg-white border"
             >
               Cancel
             </button>
-
           </div>
+
         </DialogPanel>
       </div>
     </Dialog>
