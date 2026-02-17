@@ -13,9 +13,9 @@ import { toast } from "react-toastify";
   deleteSuccess: () =>
     toast.success("🗑️✨ Bookmark removed. Clean and tidy! 🎉"),
 
-  bigCelebration: (msg) =>
-    toast.success(`🎉🥳 ${msg} 🎊✨`),
+  inform: (msg) =>
+    toast.success(`${msg}`),
   failed: (msg) =>
-    toast.error(`🎉🥳 ${msg?msg:"Error Occured"} 🎊✨`),
+    toast.error(`${msg?msg:"Error Occured"}`),
 };
 export default notify

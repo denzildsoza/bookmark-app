@@ -7,6 +7,7 @@ import bookmarkTransaction from "@/utills/bookmarkUtils";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { supabase } from "@/utills/supabase";
 import { useRouter } from "next/navigation";
+import notify from "@/utills/toastUtils";
 
 export default function BookmarksPage() {
   const [isEdit, setIsEdit] = useState(false);
@@ -17,6 +18,7 @@ export default function BookmarksPage() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    notify.inform("Logged out successfully.");
     router.push("/");
   };
 
@@ -24,7 +26,6 @@ export default function BookmarksPage() {
     <ProtectedRoute>
       <div className="min-h-screen bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-black p-6 flex justify-center">
         <div className="h-[calc(100vh-3rem)] w-full max-w-5xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-2xl flex flex-col overflow-hidden">
-          
           {/* Header */}
           <header className="flex items-center justify-between px-8 py-6 border-b border-zinc-200 dark:border-zinc-800">
             <h1 className="text-2xl font-semibold text-zinc-800 dark:text-white">
@@ -106,21 +107,25 @@ export default function BookmarksPage() {
         </div>
       </div>
 
-      <EditModal
-        isOpen={isEdit}
-        closeModal={() => setIsEdit(false)}
-        bookmark={element}
-        header="Edit Bookmark"
-        transaction="UPDATE"
-      />
+      {isEdit && (
+        <EditModal
+          isOpen={isEdit}
+          closeModal={() => setIsEdit(false)}
+          bookmark={element}
+          header="Edit Bookmark"
+          transaction="UPDATE"
+        />
+      )}
 
-      <EditModal
-        isOpen={isAdd}
-        closeModal={() => setIsAdd(false)}
-        bookmark={{}}
-        header="Add Bookmark"
-        transaction="ADD"
-      />
+      {isAdd && (
+        <EditModal
+          isOpen={isAdd}
+          closeModal={() => setIsAdd(false)}
+          bookmark={{}}
+          header="Add Bookmark"
+          transaction="ADD"
+        />
+      )}
     </ProtectedRoute>
   );
 }
