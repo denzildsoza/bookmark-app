@@ -4,6 +4,7 @@ import { useState } from "react";
 import EditModal from "@/components/EditModal";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import bookmarkTransaction from "@/utills/bookmarkUtils";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function BookmarksPage() {
   const [isEdit, setIsEdit] = useState(false);
@@ -12,7 +13,7 @@ export default function BookmarksPage() {
   const [element, setElement] = useState({});
 
   return (
-    <>
+    <ProtectedRoute>
       {/* Background */}
       <div className="min-h-screen bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-black p-6 flex justify-center">
         {/* Width Limited Container */}
@@ -104,6 +105,6 @@ export default function BookmarksPage() {
         header="Add Bookmark"
         transaction="ADD"
       />
-    </>
+    </ProtectedRoute>
   );
 }
