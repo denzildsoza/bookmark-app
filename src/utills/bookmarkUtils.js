@@ -7,44 +7,66 @@ export const getCurrentUser = async () => {
   return data.user;
 };
 
-// Add bookmark
-export const addBookmark = async ({ title, url }) => {
-  const user = await getCurrentUser();
+const bookmarkTransaction = async ({ type, payload }) => {
+  try {
+    switch (type) {
+      // ---------- ADD ----------
+      case "ADD": {
+        const user = await getCurrentUser();
 
-  const { data, error } = await supabase.from("bookmarks").insert({
-    user_id: user.id,
-    title,
-    url,
-  });
+        const { data, error } = await supabase
+          .from("bookmarks")
+          .insert({
+            user_id: user.id,
+            title: payload.title,
+            url: payload.url,
+          })
+          .select()
+          .single();
 
-  if (error) throw error;
+        if (error) throw error;
+        return data;
+      }
 
-  return data;
+      // ---------- UPDATE ----------
+      case "UPDATE": {
+        const { id, title, url } = payload;
+
+        const { data, error } = await supabase
+          .from("bookmarks")
+          .update({
+            title,
+            url,
+            updated_at: new Date(),
+          })
+          .eq("id", id)
+          .select()
+          .single();
+
+        if (error) throw error;
+        return data;
+      }
+
+      // ---------- DELETE ----------
+      case "DELETE": {
+        const { id } = payload;
+
+        const { error } = await supabase
+          .from("bookmarks")
+          .delete()
+          .eq("id", id)
+          .select();
+
+        if (error) throw error;
+        return { success: true };
+      }
+
+      default:
+        throw new Error("Invalid transaction type");
+    }
+  } catch (err) {
+    console.error("Bookmark transaction failed:", err);
+    throw err;
+  }
 };
-
-export const updateBookmark = async (id, { title, url }) => {
-  const { error, data } = await supabase
-    .from("bookmarks")
-    .update({
-      title,
-      url,
-      updated_at: new Date(),
-    })
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) throw error;
-
-  return data;
-};
-
-// Delete bookmark
-export const deleteBookmark = async (id) => {
-  const { error } = await supabase
-    .from("bookmarks")
-    .delete()
-    .eq("id", id);
-  
-  if (error) throw error;
-};
+export default bookmarkTransaction;

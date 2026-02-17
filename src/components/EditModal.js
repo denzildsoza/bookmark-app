@@ -3,14 +3,16 @@
 import { useEffect, useState } from "react";
 import Modal from "./molecules/ModalWrapper";
 import FormInput from "./atoms/FormInput";
+import bookmarkTransaction from "@/utills/bookmarkUtils";
 
-const urlRegex =
-  /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/\S*)?$/i;
+const urlRegex = /^(https?:\/\/)([a-z0-9-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;
 
 export default function EditModal({
   isOpen,
   closeModal,
   bookmark,
+  header,
+  transaction,
 }) {
   const [values, setValues] = useState({ title: "", url: "" });
   const [errors, setErrors] = useState({});
@@ -39,8 +41,7 @@ export default function EditModal({
     const newVals = { ...values, [name]: value };
     setValues(newVals);
 
-    if (touched[name])
-      setErrors(validate(newVals));
+    if (touched[name]) setErrors(validate(newVals));
   };
 
   const handleBlur = (name) => {
@@ -48,7 +49,7 @@ export default function EditModal({
     setErrors(validate(values));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newErrors = validate(values);
     setErrors(newErrors);
     setTouched({ title: true, url: true });
@@ -56,23 +57,27 @@ export default function EditModal({
     if (Object.keys(newErrors).length) return;
 
     console.log("Submit:", values);
+    await bookmarkTransaction({
+      type: transaction,
+      payload: {
+        id: bookmark.id,
+        ...values,
+      },
+    });
   };
 
   const hasErrors =
-    Object.values(errors).some(Boolean) ||
-    !values.title ||
-    !values.url;
+    Object.values(errors).some(Boolean) || !values.title || !values.url;
 
   return (
     <Modal
       isOpen={isOpen}
       closeModal={closeModal}
-      header="Edit Bookmark"
+      header
       action={handleSubmit}
       isDisable={hasErrors}
     >
       <div className="space-y-4 mt-4">
-
         <FormInput
           label="Title"
           name="title"
@@ -90,7 +95,6 @@ export default function EditModal({
           onBlur={handleBlur}
           error={touched.url ? errors.url : ""}
         />
-
       </div>
     </Modal>
   );

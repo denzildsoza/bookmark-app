@@ -3,10 +3,10 @@
 import { useState } from "react";
 import EditModal from "@/components/EditModal";
 import { useBookmarks } from "@/hooks/useBookmarks";
-import { deleteBookmark, updateBookmark } from "@/utills/bookmarkUtils";
-
+import bookmarkTransaction from "@/utills/bookmarkUtils";
 export default function BookmarksPage() {
   const [isEdit, setIsEdit] = useState(false);
+  const [isAdd, setIsAdd] = useState(false);
   const { bookmarks, loading } = useBookmarks();
   const [element, setElement] = useState({});
 
@@ -23,7 +23,10 @@ export default function BookmarksPage() {
 
           {/* Bookmark List */}
           <div className="w-full p-6 space-y-3">
-            <div className="flex items-center justify-between p-4 rounded-lg bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition">
+            <div
+              onClick={() => setIsAdd(true)}
+              className="flex items-center justify-between p-4 rounded-lg bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition"
+            >
               + Add bookmark
             </div>
             {loading ? (
@@ -59,7 +62,14 @@ export default function BookmarksPage() {
 
                     {/* Delete Button */}
                     <button
-                      onClick={() => deleteBookmark(item.id)}
+                      onClick={async () =>
+                        await bookmarkTransaction({
+                          type: "DELETE",
+                          payload: {
+                            id: item.id,
+                          },
+                        })
+                      }
                       className="text-red-500 hover:text-red-700 text-lg"
                       title="Delete"
                     >
@@ -73,10 +83,19 @@ export default function BookmarksPage() {
         </main>
       </div>
       <EditModal
-  isOpen={isEdit}
-  closeModal={() => setIsEdit(false)}
-  bookmark={element}
-/>
+        isOpen={isEdit}
+        closeModal={() => setIsEdit(false)}
+        bookmark={element}
+        header="Edit Bookmark"
+        transaction="UPDATE"
+      />
+      <EditModal
+        isOpen={isAdd}
+        closeModal={() => setIsAdd(false)}
+        bookmark={element}
+        header="Add Bookmark"
+        transaction="ADD"
+      />
     </>
   );
 }
