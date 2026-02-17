@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { supabase } from "@/utills/supabase";
-import notify from "@/utills/toastUtils";
 
 export default function useGoogleLogin(domain) {
   const [loading, setLoading] = useState(false);
@@ -20,7 +19,6 @@ export default function useGoogleLogin(domain) {
 
       if (error) throw error;
 
-      notify.loginSuccess()
     } catch (err) {
       toast.error(err.message || "Login failed");
       setLoading(false);

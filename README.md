@@ -29,15 +29,3 @@ What Issues did I face while working on this project.
 8. I also faced erors relating to development in next which I solved through debugging, bruteforce and use of AI.
 
 
-TODO's.
-Bookmark folders & tags
-
-Public share links
-
-Search & pagination
-
-Offline sync
-
-Admin dashboard
-
-Mobile responsive improvements
