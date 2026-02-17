@@ -2,16 +2,15 @@
 
 import useGoogleLogin from "@/hooks/useGoogleLogin";
 import useRedirectIfAuthenticated from "@/hooks/useRedirectIfAuthenticated";
+import getBaseUrl from "@/utills/getBaseUrl";
 
 
-const domain = process.env.NEXT_PUBLIC_SITE_URL
-  ? process.env.NEXT_PUBLIC_SITE_URL
-  : "http://localhost:3000/";
+const baseURL = getBaseUrl()
 
 export default function Login() {
   useRedirectIfAuthenticated();
 
-  const { login, loading } = useGoogleLogin(domain);
+  const { login, loading } = useGoogleLogin(baseURL);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-black px-4">
