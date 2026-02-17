@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import notify from "./toastUtils";
 
 // Get current user
 export const getCurrentUser = async () => {
@@ -25,6 +26,7 @@ const bookmarkTransaction = async ({ type, payload }) => {
           .single();
 
         if (error) throw error;
+        notify.addSuccess()
         return data;
       }
 
@@ -44,6 +46,7 @@ const bookmarkTransaction = async ({ type, payload }) => {
           .single();
 
         if (error) throw error;
+        notify.updateSuccess()
         return data;
       }
 
@@ -58,6 +61,7 @@ const bookmarkTransaction = async ({ type, payload }) => {
           .select();
 
         if (error) throw error;
+        notify.deleteSuccess()
         return { success: true };
       }
 
