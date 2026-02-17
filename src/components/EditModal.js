@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Modal from "./molecules/ModalWrapper";
 import FormInput from "./atoms/FormInput";
 import bookmarkTransaction from "@/utills/bookmarkUtils";
+import notify from "@/utills/toastUtils";
 
 // ✅ Better URL validator
 function isValidURL(url) {
@@ -75,6 +76,16 @@ export default function EditModal({
       finalUrl = "https://" + finalUrl;
     }
 
+    //Check if nothing changed
+    const noChanges =
+      values.title === bookmark.title && finalUrl === bookmark.url;
+
+    if (noChanges) {
+      notify.inform("Nothing was modified.");
+      closeModal(); // optional
+      return;
+    }
+
     await bookmarkTransaction({
       type: transaction,
       payload: {
@@ -83,6 +94,8 @@ export default function EditModal({
         url: finalUrl,
       },
     });
+
+    closeModal(); // optional
   };
 
   const hasErrors =
@@ -92,7 +105,7 @@ export default function EditModal({
     <Modal
       isOpen={isOpen}
       closeModal={closeModal}
-      header
+      header={header}
       action={handleSubmit}
       isDisable={hasErrors}
     >
@@ -100,6 +113,7 @@ export default function EditModal({
         <FormInput
           label="Title"
           name="title"
+          type="title"
           value={values.title}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -109,6 +123,7 @@ export default function EditModal({
         <FormInput
           label="URL"
           name="url"
+          type="url"
           value={values.url}
           onChange={handleChange}
           onBlur={handleBlur}
