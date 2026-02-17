@@ -56,7 +56,10 @@ const bookmarkTransaction = async ({ type, payload }) => {
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          notify.failed()
+          throw error
+        }
         notify.updateSuccess();
         return data;
       }
@@ -71,7 +74,10 @@ const bookmarkTransaction = async ({ type, payload }) => {
           .eq("id", id)
           .select();
 
-        if (error) throw error;
+        if (error) {
+          notify.failed()
+          throw error
+        };
         notify.deleteSuccess();
         return { success: true };
       }
