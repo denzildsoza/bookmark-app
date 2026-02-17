@@ -2,18 +2,15 @@
 
 import useGoogleLogin from "@/hooks/useGoogleLogin";
 import useRedirectIfAuthenticated from "@/hooks/useRedirectIfAuthenticated";
-import { supabase } from "@/utills/supabase";
-import { useState } from "react";
 
-const domain = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? process.env.NEXT_PUBLIC_SUPABASE_URL
+
+const domain = process.env.NEXT_PUBLIC_SITE_URL
+  ? process.env.NEXT_PUBLIC_SITE_URL
   : "http://localhost:3000/";
 
 export default function Login() {
   useRedirectIfAuthenticated();
-  const domain = process.env.NEXT_PUBLIC_SUPABASE_URL
-    ? process.env.NEXT_PUBLIC_SUPABASE_URL
-    : "http://localhost:3000/";
+
   const { login, loading } = useGoogleLogin(domain);
 
   return (
