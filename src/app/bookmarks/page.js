@@ -4,6 +4,7 @@ import { useState } from "react";
 import EditModal from "@/components/EditModal";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import bookmarkTransaction from "@/utills/bookmarkUtils";
+
 export default function BookmarksPage() {
   const [isEdit, setIsEdit] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
@@ -12,66 +13,71 @@ export default function BookmarksPage() {
 
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center bg-zinc-500 font-sans dark:bg-black">
-        <main className="flex min-h-screen w-full max-w-3xl flex-col bg-white dark:bg-black sm:items-start">
+      {/* Background */}
+      <div className="min-h-screen bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-black p-6 flex justify-center">
+        {/* Width Limited Container */}
+        <div className="h-[calc(100vh-3rem)] w-full max-w-5xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-2xl flex flex-col overflow-hidden">
           {/* Header */}
-          <header className="w-full py-4 px-6 border-b border-gray-200 dark:border-gray-700">
-            <h1 className="text-2xl font-bold text-black dark:text-white">
-              Bookmarks
+          <header className="flex items-center justify-between px-8 py-6 border-b border-zinc-200 dark:border-zinc-800">
+            <h1 className="text-2xl font-semibold text-zinc-800 dark:text-white">
+              🔖 Your Bookmarks
             </h1>
+
+            <button
+              onClick={() => setIsAdd(true)}
+              className="px-5 py-2 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-black hover:opacity-90 transition shadow-sm"
+            >
+              + Add Bookmark
+            </button>
           </header>
 
-          {/* Bookmark List */}
-          <div className="w-full p-6 space-y-3">
-            <div
-              onClick={() => setIsAdd(true)}
-              className="flex items-center justify-between p-4 rounded-lg bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition"
-            >
-              + Add bookmark
-            </div>
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto p-8 space-y-4">
             {loading ? (
-              <div className="flex items-center justify-between p-4 rounded-lg bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition">
-                Loading...
+              <div className="p-5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-center">
+                Loading bookmarks...
+              </div>
+            ) : bookmarks.length === 0 ? (
+              <div className="text-center py-20 text-zinc-500 dark:text-zinc-400">
+                No bookmarks yet. Click <b>Add Bookmark</b> to start ✨
               </div>
             ) : (
-              bookmarks.map((item, index) => (
+              bookmarks.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between p-4 rounded-lg bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition"
+                  className="group flex items-center justify-between p-5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition shadow-sm hover:shadow-md"
                 >
-                  {/* Title Click */}
-                  <span
+                  <div
                     onClick={() => window.open(item.url, "_blank")}
-                    className="cursor-pointer text-lg font-semibold text-black dark:text-white"
+                    className="cursor-pointer"
                   >
-                    {item.title}
-                  </span>
+                    <p className="font-semibold text-lg text-zinc-800 dark:text-white group-hover:underline">
+                      {item.title}
+                    </p>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400 truncate max-w-xl">
+                      {item.url}
+                    </p>
+                  </div>
 
-                  <div className="flex gap-3">
-                    {/* Edit Button */}
+                  <div className="flex gap-3 opacity-80 group-hover:opacity-100">
                     <button
                       onClick={() => {
                         setIsEdit(true);
                         setElement(item);
                       }}
-                      className="text-blue-500 hover:text-blue-700 text-lg"
-                      title="Edit"
+                      className="px-3 py-1 rounded-lg text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30"
                     >
                       ✏️
                     </button>
 
-                    {/* Delete Button */}
                     <button
                       onClick={async () =>
                         await bookmarkTransaction({
                           type: "DELETE",
-                          payload: {
-                            id: item.id,
-                          },
+                          payload: { id: item.id },
                         })
                       }
-                      className="text-red-500 hover:text-red-700 text-lg"
-                      title="Delete"
+                      className="px-3 py-1 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
                     >
                       ✕
                     </button>
@@ -80,8 +86,9 @@ export default function BookmarksPage() {
               ))
             )}
           </div>
-        </main>
+        </div>
       </div>
+
       <EditModal
         isOpen={isEdit}
         closeModal={() => setIsEdit(false)}
@@ -89,10 +96,11 @@ export default function BookmarksPage() {
         header="Edit Bookmark"
         transaction="UPDATE"
       />
+
       <EditModal
         isOpen={isAdd}
         closeModal={() => setIsAdd(false)}
-        bookmark={element}
+        bookmark={{}}
         header="Add Bookmark"
         transaction="ADD"
       />

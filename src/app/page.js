@@ -1,35 +1,58 @@
 "use client";
 import { supabase } from "@/utills/supabase";
+import { useState } from "react";
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
+
   const login = async () => {
+    setLoading(true);
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: "http://localhost:3000/bookmarks",
-      },
+      options: { redirectTo: "http://localhost:3000/bookmarks" },
     });
+    setLoading(false);
   };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Login or Signup
-          </h1>
-          <div className="flex items-center justify-center h-screen dark:bg-gray-800">
-            <button className="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150">
-              <img
-                className="w-6 h-6"
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                loading="lazy"
-                alt="google logo"
-              />
-              <span onClick={login}>Login with Google</span>
-            </button>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-black px-4">
+      <div className="w-full max-w-md rounded-2xl bg-white dark:bg-zinc-900 shadow-xl border border-zinc-200 dark:border-zinc-800 p-10">
+        {/* Logo */}
+        <div className="flex flex-col items-center text-center mb-8">
+          <div className="text-3xl font-bold text-zinc-800 dark:text-white">
+            🔖 Bookmark Hub
           </div>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+            Save and organize your favorite links
+          </p>
         </div>
-      </main>
+
+        {/* Heading */}
+        <h1 className="text-xl font-semibold text-center text-zinc-800 dark:text-white mb-6">
+          Login or Signup
+        </h1>
+
+        {/* Button */}
+        <button
+          onClick={login}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition shadow-sm hover:shadow-md"
+        >
+          <img
+            className="w-5 h-5"
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google"
+          />
+          <span className="font-medium text-zinc-700 dark:text-zinc-200">
+            {loading ? "Redirecting..." : "Continue with Google"}
+          </span>
+        </button>
+
+        {/* Footer */}
+        <p className="text-xs text-center text-zinc-500 dark:text-zinc-400 mt-6">
+          By continuing, you agree to our Terms & Privacy Policy
+        </p>
+      </div>
     </div>
   );
 }
