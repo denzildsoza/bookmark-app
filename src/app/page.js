@@ -9,6 +9,6 @@ export default async function Home() {
   if (session) {
     redirect("/bookmarks");
   } else {
-    redirect("/login"); // ✅ send unauthenticated users to login
+    redirect("/login"); //send unauthenticated users to login
   }
 }

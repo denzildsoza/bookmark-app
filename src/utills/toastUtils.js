@@ -15,5 +15,7 @@ import { toast } from "react-toastify";
 
   bigCelebration: (msg) =>
     toast.success(`🎉🥳 ${msg} 🎊✨`),
+  failed: (msg) =>
+    toast.error(`🎉🥳 ${msg?msg:"Error Occured"} 🎊✨`),
 };
 export default notify

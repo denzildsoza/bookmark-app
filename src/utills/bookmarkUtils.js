@@ -25,8 +25,19 @@ const bookmarkTransaction = async ({ type, payload }) => {
           .select()
           .single();
 
-        if (error) throw error;
-        notify.addSuccess()
+        if (error) {
+          console.log(error);
+
+          if (error.code === "23505") {
+            notify.failed(
+              "Title cant have duplicate values, please try a different value",
+            );
+            throw error;
+          }
+          notify.failed();
+          return
+        }
+        notify.addSuccess();
         return data;
       }
 
@@ -46,7 +57,7 @@ const bookmarkTransaction = async ({ type, payload }) => {
           .single();
 
         if (error) throw error;
-        notify.updateSuccess()
+        notify.updateSuccess();
         return data;
       }
 
@@ -61,7 +72,7 @@ const bookmarkTransaction = async ({ type, payload }) => {
           .select();
 
         if (error) throw error;
-        notify.deleteSuccess()
+        notify.deleteSuccess();
         return { success: true };
       }
 

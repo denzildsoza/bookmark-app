@@ -5,7 +5,18 @@ import Modal from "./molecules/ModalWrapper";
 import FormInput from "./atoms/FormInput";
 import bookmarkTransaction from "@/utills/bookmarkUtils";
 
-const urlRegex = /^(https?:\/\/)([a-z0-9-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;
+// ✅ Better URL validator
+function isValidURL(url) {
+  try {
+    if (!/^https?:\/\//i.test(url)) {
+      url = "https://" + url; // auto add protocol
+    }
+    const parsed = new URL(url);
+    return parsed.hostname.includes(".");
+  } catch {
+    return false;
+  }
+}
 
 export default function EditModal({
   isOpen,
@@ -31,9 +42,12 @@ export default function EditModal({
 
   const validate = (vals) => {
     const e = {};
+
     if (!vals.title.trim()) e.title = "Title required";
+
     if (!vals.url.trim()) e.url = "URL required";
-    else if (!urlRegex.test(vals.url)) e.url = "Invalid URL";
+    else if (!isValidURL(vals.url)) e.url = "Invalid URL";
+
     return e;
   };
 
@@ -56,12 +70,17 @@ export default function EditModal({
 
     if (Object.keys(newErrors).length) return;
 
-    console.log("Submit:", values);
+    let finalUrl = values.url;
+    if (!/^https?:\/\//i.test(finalUrl)) {
+      finalUrl = "https://" + finalUrl;
+    }
+
     await bookmarkTransaction({
       type: transaction,
       payload: {
         id: bookmark.id,
-        ...values,
+        title: values.title,
+        url: finalUrl,
       },
     });
   };

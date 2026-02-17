@@ -5,31 +5,47 @@ import EditModal from "@/components/EditModal";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import bookmarkTransaction from "@/utills/bookmarkUtils";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { supabase } from "@/utills/supabase";
+import { useRouter } from "next/navigation";
 
 export default function BookmarksPage() {
   const [isEdit, setIsEdit] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   const { bookmarks, loading } = useBookmarks();
   const [element, setElement] = useState({});
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
 
   return (
     <ProtectedRoute>
-      {/* Background */}
       <div className="min-h-screen bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-black p-6 flex justify-center">
-        {/* Width Limited Container */}
         <div className="h-[calc(100vh-3rem)] w-full max-w-5xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-2xl flex flex-col overflow-hidden">
+          
           {/* Header */}
           <header className="flex items-center justify-between px-8 py-6 border-b border-zinc-200 dark:border-zinc-800">
             <h1 className="text-2xl font-semibold text-zinc-800 dark:text-white">
               🔖 Your Bookmarks
             </h1>
 
-            <button
-              onClick={() => setIsAdd(true)}
-              className="px-5 py-2 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-black hover:opacity-90 transition shadow-sm"
-            >
-              + Add Bookmark
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setIsAdd(true)}
+                className="px-5 py-2 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-black hover:opacity-90 transition shadow-sm"
+              >
+                + Add Bookmark
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="px-5 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 transition shadow-sm"
+              >
+                Logout
+              </button>
+            </div>
           </header>
 
           {/* Scrollable Content */}
