@@ -56,7 +56,10 @@ export default function EditModal({
     const newVals = { ...values, [name]: value };
     setValues(newVals);
 
-    if (touched[name]) setErrors(validate(newVals));
+    // If ANY field is touched, keep validating continuously
+    if (Object.values(touched).some(Boolean)) {
+      setErrors(validate(newVals));
+    }
   };
 
   const handleBlur = (name) => {
